@@ -7,7 +7,7 @@ Vue.component('categories-list', {
   <select v-model="localselected" @change="onChange">\
   <option disabled value="">Please select one</option>\
   <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>\
-  </select>{{ localselected }}\
+  </select>\
   <categories-list v-if="childExists" :parent="localselected" :depth="depth + 1" v-model="selected"></categories-list>
   </div>'
 
@@ -44,14 +44,14 @@ Vue.component('categories-list', {
   computed: {
     childExists: ->
       for c, i in window.categories
-        if _.indexOf(c.parents, @localselected) > -1
+        if c.parents.indexOf(@localselected) > -1
           return true
       return false
   }
 
 
   created: ->
-    @categories = window.categories.filter (c) => _.indexOf(c.parents, @parent) > -1  # use of fat arrow to maintain scope of "this"/@
+    @categories = window.categories.filter (c) => c.parents.indexOf(@parent) > -1  # use of fat arrow to maintain scope of "this"/@
 
 
   methods: {
