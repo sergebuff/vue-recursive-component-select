@@ -13,7 +13,7 @@ Vue.component('categories-list', {
 
 
   model: {
-    prop: 'selected',
+    prop: 'selected'
     event: 'change'
   }
 
@@ -24,12 +24,12 @@ Vue.component('categories-list', {
       default: 0
     }
     parent: {
-      validator: (value) -> value is null or value > 0
+      validator: (value) -> value is null or typeof value is "string"
       default: -> null
     }
     selected: {
       type: Array
-      default: []
+      default: -> return []
     }
   }
 
@@ -43,15 +43,17 @@ Vue.component('categories-list', {
 
   computed: {
     childExists: ->
-      for c, i in window.categories
-        if c.parents.indexOf(@localselected) > -1
-          return true
+      if @localselected.length > 1
+        for c in window.categories
+          return true if c.parents.indexOf(@localselected) >= 0
       return false
   }
 
 
   created: ->
-    @categories = window.categories.filter (c) => c.parents.indexOf(@parent) > -1  # use of fat arrow to maintain scope of "this"/@
+    @categories = window.categories.filter (c) => # use of fat arrow to maintain scope of "this"/@
+      return if @parent is null and c.parents.length < 1 then true else c.parents.indexOf(@parent) > -1
+
 
 
   methods: {
